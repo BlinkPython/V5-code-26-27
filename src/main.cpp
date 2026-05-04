@@ -1,4 +1,5 @@
 #include "main.h"
+#include "auto.h"
 
 /**
  * A callback function for LLEMU's center button.
@@ -58,7 +59,10 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous()
+{
+	AutonomousCode();
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -71,7 +75,8 @@ void autonomous() {}
  *
  * If the robot is disabled or communications is lost, the
  * operator control task will be stopped. Re-enabling the robot will restart the
- * task, not resume it from where it left off.
+ * task, not resume it from where it left off. 
+ * DO NOT WRITE AUTO HERE, instead use the dedicated auto.cpp file for the auto
  */
 void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
