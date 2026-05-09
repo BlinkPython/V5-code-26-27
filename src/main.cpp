@@ -24,7 +24,7 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	std::string InitText = "helo";
+	std::string InitText = "heloo";
 
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, InitText);
