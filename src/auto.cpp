@@ -1,4 +1,4 @@
-#include "auto.h"
+#include "main.h"
 
 void AutonomousCode()
 {

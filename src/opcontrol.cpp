@@ -1,4 +1,4 @@
-#include "auto.h"
+#include "main.h"
 
 void Controls() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);

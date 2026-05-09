@@ -56,6 +56,8 @@
 #include "pros/rtos.h"
 #include "pros/screen.h"
 #include "pros/vision.h"
+#include "customFuncs/auto.h"
+#include "customFuncs/opcontrol.h"
 
 #ifdef __cplusplus
 #include "pros/adi.hpp"
@@ -75,6 +77,6 @@
 #include "pros/rtos.hpp"
 #include "pros/screen.hpp"
 #include "pros/vision.hpp"
-#endif
 
+#endif
 #endif  // _PROS_API_H_

@@ -1,3 +1,3 @@
-#ifndef
+#pragma once
 
 void Controls();
