@@ -38,7 +38,7 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-	std::string DisText = "imma sleep";
+	std::string DisText = "imma sleep ok wait";
 
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, DisText);
