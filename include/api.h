@@ -58,6 +58,7 @@
 #include "pros/vision.h"
 #include "customFuncs/auto.h"
 #include "customFuncs/opcontrol.h"
+#include <string>
 
 #ifdef __cplusplus
 #include "pros/adi.hpp"
