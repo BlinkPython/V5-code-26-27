@@ -24,8 +24,10 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	std::string InitText = "heloo";
+
 	pros::lcd::initialize();
-	pros::lcd::set_text(1, "Hello PROS User!");
+	pros::lcd::set_text(1, InitText);
 
 	pros::lcd::register_btn1_cb(on_center_button);
 }
@@ -35,7 +37,12 @@ void initialize() {
  * the VEX Competition Switch, following either autonomous or opcontrol. When
  * the robot is enabled, this task will exit.
  */
-void disabled() {}
+void disabled() {
+	std::string DisText = "imma sleep";
+
+	pros::lcd::initialize();
+	pros::lcd::set_text(1, DisText);
+}
 
 /**
  * Runs after initialize(), and before autonomous when connected to the Field
@@ -46,7 +53,12 @@ void disabled() {}
  * This task will exit when the robot is enabled and autonomous or opcontrol
  * starts.
  */
-void competition_initialize() {}
+void competition_initialize() {
+	std::string CompInitText = "LOCK IN BRO OR I WILL BREAK ON YOU 10 SECONDS INTO THE ROUND";
+
+	pros::lcd::initialize();
+	pros::lcd::set_text(1, CompInitText);
+}
 
 // DO NOT WRITE AUTO HERE, instead use the dedicated auto.cpp file instead
 
