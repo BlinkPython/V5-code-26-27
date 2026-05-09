@@ -54,7 +54,7 @@ void disabled() {
  * starts.
  */
 void competition_initialize() {
-	std::string CompInitText = "LOCK IN BRO OR I WILL BREAK ON YOU 10 SECONDS INTO THE ROUND";
+	std::string CompInitText = "LOCK IN BRO OR I WILL BREAK 10 SECONDS INTO THE ROUND";
 
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, CompInitText);
@@ -62,14 +62,12 @@ void competition_initialize() {
 
 // DO NOT WRITE AUTO HERE, instead use the dedicated auto.cpp file instead
 
-void autonomous()
-{
+void autonomous(){
 	void AutonomousCode();
 }
 
 //  DO NOT WRITE CONTROLS HERE, instead use the dedicated opcontrol.cpp file for it
 
-void opcontrol() 
-{
+void opcontrol() {
 	void Controls();
 }

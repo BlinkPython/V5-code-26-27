@@ -14,5 +14,6 @@ void AutonomousCode()
  * If the robot is disabled or communications is lost, the autonomous task
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
+ *
  * Here is where you write the auto instead of in main.cpp
  */
