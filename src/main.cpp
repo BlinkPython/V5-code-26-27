@@ -54,7 +54,7 @@ void disabled() {
  * starts.
  */
 void competition_initialize() {
-	std::string CompInitText = "LOCK IN BRO OR I WILL BREAK ON YOU 10 SECONDS INTO THE ROUND";
+	std::string CompInitText = "LOCK IN BRO OR I WILL BREAK 10 SECONDS INTO THE ROUND";
 
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, CompInitText);
