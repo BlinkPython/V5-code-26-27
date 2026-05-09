@@ -62,14 +62,12 @@ void competition_initialize() {
 
 // DO NOT WRITE AUTO HERE, instead use the dedicated auto.cpp file instead
 
-void autonomous()
-{
+void autonomous(){
 	void AutonomousCode();
 }
 
 //  DO NOT WRITE CONTROLS HERE, instead use the dedicated opcontrol.cpp file for it
 
-void opcontrol() 
-{
+void opcontrol() {
 	void Controls();
 }
