@@ -41,6 +41,9 @@ void initialize() {
 	 lemlib::Omniwheel::NEW_325,
 	 360,
 	 2);
+
+	 pros::adi::Encoder VertEncoder('A', 'B', true);
+	 pros::adi::Encoder HoriEncoder('C', 'D', true);
 }
 
 /**
