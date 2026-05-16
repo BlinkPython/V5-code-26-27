@@ -32,7 +32,7 @@ void initialize() {
 	pros::lcd::register_btn1_cb(on_center_button);
 
 	pros::MotorGroup left_drivetrain({1, 2, 3}, pros::MotorGearset::green);
-	pros::MotorGroup right_drivetrain({4, 5, 6}, pros::MotorGearset::green);
+	pros::MotorGroup right_drivetrain({1, 2, 3}, pros::MotorGearset::green);
 
 	lemlib::Drivetrain drivetrain(\
 	 &left_drivetrain,
