@@ -59,6 +59,7 @@
 #include "customFuncs/auto.h"
 #include "customFuncs/opcontrol.h"
 #include <string>
+#include "lemlib/api.hpp"
 
 #ifdef __cplusplus
 #include "pros/adi.hpp"
