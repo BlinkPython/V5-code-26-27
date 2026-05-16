@@ -30,6 +30,20 @@ void initialize() {
 	pros::lcd::set_text(1, InitText);
 
 	pros::lcd::register_btn1_cb(on_center_button);
+
+	pros::MotorGroup left_drivetrain({1, 2, 3}, pros::MotorGearset::green);
+	pros::MotorGroup right_drivetrain({1, 2, 3}, pros::MotorGearset::green);
+
+	lemlib::Drivetrain drivetrain(\
+	 &left_drivetrain,
+	 &right_drivetrain,
+	 10.5,
+	 lemlib::Omniwheel::NEW_325,
+	 360,
+	 2);
+
+	 pros::adi::Encoder VertEncoder('A', 'B', true);
+	 pros::adi::Encoder HoriEncoder('C', 'D', true);
 }
 
 /**
@@ -38,7 +52,7 @@ void initialize() {
  * the robot is enabled, this task will exit.
  */
 void disabled() {
-	std::string DisText = "imma sleep ok wait";
+	std::string DisText = "imma sleep ok wait for it";
 
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, DisText);
@@ -54,7 +68,7 @@ void disabled() {
  * starts.
  */
 void competition_initialize() {
-	std::string CompInitText = "LOCK IN BRO OR I WILL BREAK ON YOU 10 SECONDS INTO THE ROUND";
+	std::string CompInitText = "LOCK IN BRO OR I WILL BREAK 10 SECONDS INTO THE ROUND";
 
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, CompInitText);
@@ -62,14 +76,12 @@ void competition_initialize() {
 
 // DO NOT WRITE AUTO HERE, instead use the dedicated auto.cpp file instead
 
-void autonomous()
-{
+void autonomous(){
 	void AutonomousCode();
 }
 
 //  DO NOT WRITE CONTROLS HERE, instead use the dedicated opcontrol.cpp file for it
 
-void opcontrol() 
-{
+void opcontrol() {
 	void Controls();
 }
