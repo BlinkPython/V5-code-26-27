@@ -16,9 +16,7 @@ void on_center_button() {
 		pros::lcd::clear_line(2);
 	}
 }
-pros::Controller controller(pros::E_CONTROLLER_MASTER);
-pros::Motor motor_port6(6);
-pros::Motor motor_port7(7);
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -26,11 +24,10 @@ pros::Motor motor_port7(7);
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+	std::string InitText = "heloo";
+
 	pros::lcd::initialize();
-<<<<<<< HEAD
-=======
 	pros::lcd::set_text(1, InitText);
->>>>>>> Shri
 	pros::lcd::register_btn1_cb(on_center_button);
 
 	pros::MotorGroup left_drivetrain({1, 2, 3}, pros::MotorGearset::green);
@@ -77,14 +74,7 @@ void competition_initialize() {
 }
 
 // DO NOT WRITE AUTO HERE, instead use the dedicated auto.cpp file instead
-/*
-░█████╗░██╗░░░██╗████████╗░█████╗░███╗░░██╗
-██╔══██╗██║░░░██║╚══██╔══╝██╔══██╗████╗░██║
-███████║██║░░░██║░░░██║░░░██║░░██║██╔██╗██║
-██╔══██║██║░░░██║░░░██║░░░██║░░██║██║╚████║
-██║░░██║╚██████╔╝░░░██║░░░╚█████╔╝██║░╚███║
-╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░╚══╝
-*/
+
 void autonomous(){
 	void AutonomousCode();
 }
@@ -92,46 +82,5 @@ void autonomous(){
 //  DO NOT WRITE CONTROLS HERE, instead use the dedicated opcontrol.cpp file for it
 
 void opcontrol() {
-    while (true) {
-        // Read button states
-        bool r1_pressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-        bool r2_pressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
-
-        // Check if BOTH R1 AND R2 are held
-        if (r1_pressed && r2_pressed) {
-            // Spin motors at full power (127)
-            motor_port6.move(127);
-            motor_port7.move(127);
-        } else {
-            // Stop motors if either button is released
-            motor_port6.move(0);
-            motor_port7.move(0);
-        }
-
-        // Output wattage to screen & terminal log
-        double motor6_watts = motor_port6.get_power();
-        double motor7_watts = motor_port7.get_power();
-
-        pros::lcd::print(1, "Port 6 Power: %.2f W", motor6_watts);
-        pros::lcd::print(2, "Port 7 Power: %.2f W", motor7_watts);
-
-        pros::delay(20);
-			pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::MotorGroup left_mg({1, -2, 3});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-	pros::MotorGroup right_mg({-4, 5, -6});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
-
-
-	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
-
-		// Arcade control scheme
-		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		left_mg.move(dir - turn);                      // Sets left motor voltage
-		right_mg.move(dir + turn);                     // Sets right motor voltage
-		pros::delay(20);                               // Run for 20 ms then update
-	}
-    }
+	void Controls();
 }
