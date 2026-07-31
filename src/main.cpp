@@ -27,11 +27,15 @@ pros::Motor motor_port7(7);
  */
 void initialize() {
 	pros::lcd::initialize();
+<<<<<<< HEAD
+=======
+	pros::lcd::set_text(1, InitText);
+>>>>>>> Shri
 	pros::lcd::register_btn1_cb(on_center_button);
 
 	pros::MotorGroup left_drivetrain({1, 2, 3}, pros::MotorGearset::green);
 	pros::MotorGroup right_drivetrain({1, 2, 3}, pros::MotorGearset::green);
-
+	
 	lemlib::Drivetrain drivetrain(\
 	 &left_drivetrain,
 	 &right_drivetrain,
