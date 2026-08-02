@@ -1,133 +1,306 @@
 #include "main.h"
 
+// ===========================
+// DEVICES
+// ===========================
 
-/**
- * A callback function for LLEMU's center button.
- *
- * When this callback is fired, it will toggle line 2 of the LCD text between
- * "I was pressed!" and nothing.
- */
-void on_center_button() {
-	static bool pressed = false;
-	pressed = !pressed;
-	if (pressed) {
-		pros::lcd::set_text(2, "I was pressed!");
-	} else {
-		pros::lcd::clear_line(2);
-	}
+pros::Controller master(pros::E_CONTROLLER_MASTER);
+
+// Drive
+pros::MotorGroup leftDrive({1, 2, 3});
+pros::MotorGroup rightDrive({-4, -5, -6});
+
+// Cascade
+pros::Motor lift(7);
+
+// Intake / mechanism
+pros::Motor mechanism(8);
+
+// Pneumatic claw
+pros::adi::DigitalOut claw('A');
+
+// IMU
+pros::Imu imu(10);
+
+
+// ===========================
+// LEMLIB SETUP
+// ===========================
+
+// Tracking wheels (CHANGE THESE)
+pros::Rotation verticalEncoder(11);
+pros::Rotation horizontalEncoder(12);
+
+lemlib::TrackingWheel verticalTrackingWheel(
+    &verticalEncoder,
+    lemlib::Omniwheel::NEW_275,
+    0
+);
+
+lemlib::TrackingWheel horizontalTrackingWheel(
+    &horizontalEncoder,
+    lemlib::Omniwheel::NEW_275,
+    0
+);
+
+
+lemlib::Drivetrain drivetrain(
+    &leftDrive,
+    &rightDrive,
+    10.5,
+    lemlib::Omniwheel::NEW_325,
+    360,
+    2
+);
+
+
+lemlib::OdomSensors sensors(
+    &verticalTrackingWheel,
+    nullptr,
+    &horizontalTrackingWheel,
+    nullptr,
+    &imu
+);
+
+
+lemlib::ControllerSettings lateralController(
+    10,
+    0,
+    3,
+    3,
+    1,
+    100,
+    3
+);
+
+
+lemlib::ControllerSettings angularController(
+    2,
+    0,
+    10,
+    3,
+    1,
+    100,
+    3
+);
+
+
+lemlib::Chassis chassis(
+    drivetrain,
+    lateralController,
+    angularController,
+    sensors
+);
+
+
+// ===========================
+// CUSTOM FUNCTIONS
+// ===========================
+
+
+// ---- CLAW ----
+
+void openClaw() {
+    claw.set_value(true);
 }
-pros::Controller controller(pros::E_CONTROLLER_MASTER);
-pros::Motor motor_port6(6);
-pros::Motor motor_port7(7);
-/**
- * Runs initialization code. This occurs as soon as the program is started.
- *
- * All other competition modes are blocked by initialize; it is recommended
- * to keep execution time for this mode under a few seconds.
- */
+
+void closeClaw() {
+    claw.set_value(false);
+}
+
+
+// ---- CASCADE ----
+
+void liftTo(int position) {
+    lift.move_absolute(position, 100);
+}
+
+void liftManual(int power) {
+    lift.move(power);
+}
+
+void liftStop() {
+    lift.brake();
+}
+
+void waitLift() {
+    while(lift.is_busy()) {
+        pros::delay(10);
+    }
+}
+
+
+// ---- MECHANISM ----
+
+void mechanismIn() {
+    mechanism.move(127);
+}
+
+void mechanismOut() {
+    mechanism.move(-127);
+}
+
+void mechanismStop() {
+    mechanism.brake();
+}
+
+
+// ---- DRIVE ----
+
+void driveTo(double x, double y) {
+    chassis.moveToPoint(x, y, 2000);
+}
+
+void drivePose(double x, double y, double heading) {
+    chassis.moveToPose(x, y, heading, 3000);
+}
+
+void turnTo(double heading) {
+    chassis.turnToHeading(heading, 1000);
+}
+
+void waitDrive() {
+    while(chassis.isInMotion()) {
+        pros::delay(10);
+    }
+}
+
+
+// ===========================
+// GAME FUNCTIONS
+// ===========================
+
+void pickupPin() {
+    openClaw();
+    pros::delay(150);
+
+    closeClaw();
+    pros::delay(200);
+}
+
+
+void scorePin() {
+
+    // CHANGE HEIGHT VALUES LATER
+    liftTo(500);
+
+    waitLift();
+
+    openClaw();
+
+    pros::delay(200);
+
+    liftTo(0);
+}
+
+
+void resetRobot() {
+    liftTo(0);
+    closeClaw();
+    mechanismStop();
+}
+
+
+// ===========================
+// COMPETITION FUNCTIONS
+// ===========================
+
 void initialize() {
-	pros::lcd::initialize();
-	pros::lcd::register_btn1_cb(on_center_button);
 
-	pros::MotorGroup left_drivetrain({1, 2, 3}, pros::MotorGearset::green);
-	pros::MotorGroup right_drivetrain({1, 2, 3}, pros::MotorGearset::green);
+    pros::lcd::initialize();
 
-	lemlib::Drivetrain drivetrain(\
-	 &left_drivetrain,
-	 &right_drivetrain,
-	 10.5,
-	 lemlib::Omniwheel::NEW_325,
-	 360,
-	 2);
+    imu.reset();
 
-	 pros::adi::Encoder VertEncoder('A', 'B', true);
-	 pros::adi::Encoder HoriEncoder('C', 'D', true);
+    while(imu.is_calibrating()) {
+        pros::delay(20);
+    }
+
+    chassis.calibrate();
+
+    pros::lcd::set_text(1,"Robot Ready");
 }
 
-/**
- * Runs while the robot is in the disabled state of Field Management System or
- * the VEX Competition Switch, following either autonomous or opcontrol. When
- * the robot is enabled, this task will exit.
- */
+
 void disabled() {
-	std::string DisText = "imma sleep ok wait for it";
 
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, DisText);
 }
 
-/**
- * Runs after initialize(), and before autonomous when connected to the Field
- * Management System or the VEX Competition Switch. This is intended for
- * competition-specific initialization routines, such as an autonomous selector
- * on the LCD.
- *
- * This task will exit when the robot is enabled and autonomous or opcontrol
- * starts.
- */
+
 void competition_initialize() {
-	std::string CompInitText = "LOCK IN BRO OR I WILL BREAK 10 SECONDS INTO THE ROUND";
 
-	pros::lcd::initialize();
-	pros::lcd::set_text(1, CompInitText);
 }
 
-// DO NOT WRITE AUTO HERE, instead use the dedicated auto.cpp file instead
-/*
-░█████╗░██╗░░░██╗████████╗░█████╗░███╗░░██╗
-██╔══██╗██║░░░██║╚══██╔══╝██╔══██╗████╗░██║
-███████║██║░░░██║░░░██║░░░██║░░██║██╔██╗██║
-██╔══██║██║░░░██║░░░██║░░░██║░░██║██║╚████║
-██║░░██║╚██████╔╝░░░██║░░░╚█████╔╝██║░╚███║
-╚═╝░░╚═╝░╚═════╝░░░░╚═╝░░░░╚════╝░╚═╝░░╚══╝
-*/
-void autonomous(){
-	void AutonomousCode();
+
+void autonomous() {
+
+    chassis.setPose(0,0,0);
+
+
+    pickupPin();
+
+    driveTo(24,12);
+
+    scorePin();
+
 }
 
-//  DO NOT WRITE CONTROLS HERE, instead use the dedicated opcontrol.cpp file for it
 
 void opcontrol() {
-    while (true) {
-        // Read button states
-        bool r1_pressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R1);
-        bool r2_pressed = controller.get_digital(pros::E_CONTROLLER_DIGITAL_R2);
 
-        // Check if BOTH R1 AND R2 are held
-        if (r1_pressed && r2_pressed) {
-            // Spin motors at full power (127)
-            motor_port6.move(127);
-            motor_port7.move(127);
-        } else {
-            // Stop motors if either button is released
-            motor_port6.move(0);
-            motor_port7.move(0);
+    while(true) {
+
+
+        // DRIVE
+
+        int forward = master.get_analog(
+            pros::E_CONTROLLER_ANALOG_LEFT_Y
+        );
+
+        int turn = master.get_analog(
+            pros::E_CONTROLLER_ANALOG_RIGHT_X
+        );
+
+
+        leftDrive.move(forward + turn);
+        rightDrive.move(forward - turn);
+
+
+
+        // LIFT CONTROL
+
+        if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+            liftManual(127);
         }
 
-        // Output wattage to screen & terminal log
-        double motor6_watts = motor_port6.get_power();
-        double motor7_watts = motor_port7.get_power();
+        else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+            liftManual(-127);
+        }
 
-        pros::lcd::print(1, "Port 6 Power: %.2f W", motor6_watts);
-        pros::lcd::print(2, "Port 7 Power: %.2f W", motor7_watts);
+        else {
+            lift.brake();
+        }
+
+
+
+        // CLAW
+
+        if(master.get_digital_new_press(
+            pros::E_CONTROLLER_DIGITAL_L1)) {
+
+            openClaw();
+
+        }
+
+
+        if(master.get_digital_new_press(
+            pros::E_CONTROLLER_DIGITAL_L2)) {
+
+            closeClaw();
+
+        }
+
+
 
         pros::delay(20);
-			pros::Controller master(pros::E_CONTROLLER_MASTER);
-	pros::MotorGroup left_mg({1, -2, 3});    // Creates a motor group with forwards ports 1 & 3 and reversed port 2
-	pros::MotorGroup right_mg({-4, 5, -6});  // Creates a motor group with forwards port 5 and reversed ports 4 & 6
-
-
-	while (true) {
-		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
-
-		// Arcade control scheme
-		int dir = master.get_analog(ANALOG_LEFT_Y);    // Gets amount forward/backward from left joystick
-		int turn = master.get_analog(ANALOG_RIGHT_X);  // Gets the turn left/right from right joystick
-		left_mg.move(dir - turn);                      // Sets left motor voltage
-		right_mg.move(dir + turn);                     // Sets right motor voltage
-		pros::delay(20);                               // Run for 20 ms then update
-	}
     }
 }
